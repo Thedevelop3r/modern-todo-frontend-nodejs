@@ -1,7 +1,7 @@
 "use client";
-import type { Metadata } from "next";
+// import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { useState } from "react";
+// import { useState } from "react";
 import { usePathname } from "next/navigation";
 import "./globals.css";
 import Link from "next/link";
@@ -36,12 +36,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="text-sm lg:flex-grow"></div>
             <div>
               {navLinks.map(({ href, label }) => (
-                <a
+                <Link
+                  key={href}
                   href={href}
                   className={`block mt-4 opacity-100 lg:inline-block rounded-md lg:mt-0 text-black px-2 py-1 ${path == href ? "bg-white" : "hover:text-gray-600"} font-extrabold mr-4`}
                 >
                   {label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
