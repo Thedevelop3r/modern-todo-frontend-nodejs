@@ -1,12 +1,5 @@
 import Link from "next/link";
 
-// meta data
-
-export const meta = {
-  title: "Modern Todo App",
-  description: "Manage Your Personal Todos With Ease, Easily Share Them Across Contacts.",
-};
-
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between py-10 bg-slate-100">
