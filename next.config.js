@@ -37,7 +37,7 @@ const securityHeaders = [
       " "
     )} 'unsafe-inline'; img-src 'self' ${allowedDomains.join(" ")} data: blob:; font-src 'self' ${allowedDomains.join(" ")} data:; connect-src 'self' ${allowedDomains.join(
       " "
-    )} frame-src 'self' ${allowedDomains.join(" ")};`,
+    )}; frame-src 'self' ${allowedDomains.join(" ")};`,
   },
 ];
 
