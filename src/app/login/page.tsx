@@ -13,17 +13,25 @@ export default function Login() {
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // const res = await fetch("/api/auth", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ email, password }),
-    // }); // const json = await res.json();
+    try {
+      let response = await fetch("http://localhost:4000/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!response.ok) throw new Error("Login failed");
+      let json = await response.json();
 
-    setIsSubmitting(false); // if (!res.ok) return setError(json.message);
-    console.log("login success");
-    // router.push("/");
+      console.log(json);
+      setIsSubmitting(false); // if (!res.ok) return setError(json.message);
+      console.log("login success");
+      // router.push("/");
+    } catch (error) {
+      console.log(error);
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -73,7 +81,15 @@ export default function Login() {
               Forgot Password?
             </Link>
           </div>
+          {/* not a user register */}
+          <div className="text-left mt-4">
+            <p className="text-gray-500 text-sm inline-block">Not a user?</p>
+            <Link className="ml-2 inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/register">
+              Register Now
+            </Link>
+          </div>
         </form>
+
         <p className="text-center text-gray-500 text-xs">&copy;{new Date().getFullYear()} Tekvek. All rights reserved.</p>
       </div>
     </div>
