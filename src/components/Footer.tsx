@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import GeneralFooter from "./GeneralFooter";
-import DashboardFooter from "./DashboardFooter";
+import GeneralFooter from "./General/GeneralFooter";
+import DashboardFooter from "./Dashboard/DashboardFooter";
 import { usePathname } from "next/navigation";
 import Links from "@/utils/static.json";
 

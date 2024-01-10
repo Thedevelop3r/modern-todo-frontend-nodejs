@@ -1,6 +1,6 @@
 "use client";
-import DashboardHeader from "./DashboardHeader";
-import GeneralHeader from "./GeneralHeader";
+import DashboardHeader from "./Dashboard/DashboardHeader";
+import GeneralHeader from "./General/GeneralHeader";
 import { usePathname } from "next/navigation";
 
 import Links from "@/utils/static.json";
