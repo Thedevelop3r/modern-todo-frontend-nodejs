@@ -7,7 +7,7 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false); // const router = useRouter();
 
   const validPassword = (password: string) => {
-    return password.length >= 8 && password.match(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/);
+    return password.length >= 8; //&& password.match(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/);
   };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -16,6 +16,8 @@ export default function Login() {
     try {
       let response = await fetch("http://localhost:4000/api/user/login", {
         method: "POST",
+        // allow credentials to be sent to server
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -31,6 +33,7 @@ export default function Login() {
     } catch (error) {
       console.log(error);
       setIsSubmitting(false);
+      alert("Login failed");
     }
   };
 
@@ -58,20 +61,26 @@ export default function Login() {
             </label>
             <input
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                // modify error display input error display
+                if (e.target.value.length === 0) {
+                  e.target.classList.remove("border-green-500");
+                  e.target.classList.add("border-red-500");
+                } else if (validPassword(e.target.value)) {
+                  e.target.classList.remove("border-red-500");
+                  e.target.classList.add("border-green-500");
+                }
+              }}
               className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               type="password"
               placeholder="******************"
               required
               minLength={8}
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
             />
             {/* display allowed pattren, turn green when its matches */}
-            {
-              <div className={`text-xs italic ${password.length === 0 || validPassword(password) ? "text-gray-500" : "text-red-600"}`}>
-                Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.
-              </div>
-            }
+            {<div className={`text-xs italic ${validPassword(password) ? "text-green-500" : "text-red-600"}`}>Password must be at least 8 characters long.</div>}
           </div>
           <div className="flex items-center justify-between">
             <button disabled={isSubmitting} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">

@@ -11,7 +11,7 @@ export default function Register() {
   const router = useRouter();
 
   const validPassword = (password: string) => {
-    return password.length >= 8 && password.match(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/);
+    return password.length >= 8; //&& password.match(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,6 +20,8 @@ export default function Register() {
     try {
       let response = await fetch("http://localhost:4000/api/user/register", {
         method: "POST",
+        // allow credentials to be sent to server
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -30,6 +32,7 @@ export default function Register() {
 
       console.log(json);
       setIsSubmitting(false);
+      alert("Register success");
       router.push("/login");
     } catch (error) {
       console.log(error);
@@ -61,13 +64,25 @@ export default function Register() {
             </label>
             <input
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              onChange={(e) => {
+                setPassword(e.target.value);
+                // modify error display input error display
+                if (e.target.value.length === 0) {
+                  e.target.classList.remove("border-green-500");
+                  e.target.classList.add("border-red-500");
+                } else if (validPassword(e.target.value)) {
+                  e.target.classList.remove("border-red-500");
+                  e.target.classList.add("border-green-500");
+                }
+              }}
+              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               type="password"
               placeholder="Password"
+              minLength={8}
               required
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              //   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
             />
+            {<div className={`text-xs italic ${validPassword(password) ? "text-green-500" : "text-red-600"}`}>Password must be at least 8 characters long.</div>}
           </div>
           <div className="flex items-center justify-between">
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" disabled={isSubmitting}>
