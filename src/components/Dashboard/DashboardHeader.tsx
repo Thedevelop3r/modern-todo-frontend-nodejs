@@ -19,7 +19,7 @@ export default function DashboardHeader({ DashboardnavLinks }: { DashboardnavLin
             href={href}
             className={`block opacity-100 whitespace-nowrap mx-2 lg:inline-block rounded-md lg:mt-0 ${path == href ? "text-black" : "text-white"} px-2 py-1 ${
               path == href ? "bg-white" : "hover:text-gray-200"
-            } font-extrabold`}
+            } font-semibold`}
           >
             {label}
           </Link>
