@@ -24,6 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
+      {/* meta */}
+      <head>
+        <title>Modern Todo App</title>
+        <meta name="description" content="Manage todos at ease" />
+      </head>
       <body className={inter.className + " w-full"}>
         <nav className="flex items-center justify-between flex-nowrap bg-teal-900 p-6 w-full">
           <div className="flex items-center flex-shrink-0 text-white mr-6">
