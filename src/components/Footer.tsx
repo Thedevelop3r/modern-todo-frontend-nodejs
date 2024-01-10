@@ -7,5 +7,9 @@ import Links from "@/utils/static.json";
 
 export default function Footer() {
   const path = usePathname();
-  return <>{!path.includes("/dashboard") ? <GeneralFooter GenralNavbarLinks={Links.generalLinks} /> : <DashboardFooter DashboardnavLinks={Links.generalLinks} />}</>;
+  return <>{!path.includes("/dashboard") ?
+   <GeneralFooter GenralNavbarLinks={Links.generalLinks} /> 
+   : <DashboardFooter DashboardnavLinks={Links.generalLinks} />
+  }
+  </>;
 }

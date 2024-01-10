@@ -14,8 +14,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={" w-full"}>
         <Header />
         {children}
-      </body>
       <Footer />
+      </body>
     </html>
   );
 }
