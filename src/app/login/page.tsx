@@ -1,5 +1,5 @@
 "use client";
-import Link from 'next/link';
+import Link from "next/link";
 import React, { FormEventHandler, useState } from "react";
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -60,7 +60,7 @@ export default function Login() {
             />
             {/* display allowed pattren, turn green when its matches */}
             {
-              <div className={`text-xs italic ${(password.length === 0 || validPassword(password)) ? "text-gray-500" : "text-red-600"}`}>
+              <div className={`text-xs italic ${password.length === 0 || validPassword(password) ? "text-gray-500" : "text-red-600"}`}>
                 Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.
               </div>
             }
@@ -74,7 +74,7 @@ export default function Login() {
             </Link>
           </div>
         </form>
-        <p className="text-center text-gray-500 text-xs">&copy;2020 Acme Corp. All rights reserved.</p>
+        <p className="text-center text-gray-500 text-xs">&copy;{new Date().getFullYear()} Tekvek. All rights reserved.</p>
       </div>
     </div>
   );
