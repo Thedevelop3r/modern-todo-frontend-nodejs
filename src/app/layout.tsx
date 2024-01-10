@@ -4,9 +4,9 @@ import Footer from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'Modern Todo Application',
-  description: 'Manage Your Personal Todos With Ease, Easily Share Them Across Contacts.',
-}
+  title: "Modern Todo Application",
+  description: "Manage Your Personal Todos With Ease, Easily Share Them Across Contacts.",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={" w-full"}>
         <Header />
         {children}
-      <Footer />
+        <Footer />
       </body>
     </html>
   );
