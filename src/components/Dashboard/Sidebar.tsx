@@ -5,19 +5,17 @@ import { usePathname } from "next/navigation";
 import avatar from "@/assets/avatar/Men.svg";
 // import avatar from "@/assets/avatar/Women.svg"; // dynamic gender
 import NextImage from "next/image";
+import { useStore } from "@/store/state";
 
 export default function Sidebar({ navLinks }: { navLinks: Array<{ href: string; label: string }> }) {
   const path = usePathname();
-  const router = {
-    name: "John Doe",
-    email: "jhon@mail.com",
-  };
+  const user = useStore.getState().user;
   return (
     <div className="flex flex-col w-48 h-screen px-4 py-8 bg-slate-50 border-r dark:bg-gray-800 dark:border-gray-600">
       <div className="flex flex-col items-center mt-6 -mx-2">
         <NextImage src={avatar} alt="avatar" width={100} height={100} />
-        <h4 className="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200 hover:underline">{router.name}</h4>
-        <p className="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400 hover:underline">{router.email}</p>
+        <h4 className="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200 hover:underline">{user.name}</h4>
+        <p className="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400 hover:underline">{user.email}</p>
       </div>
       <div className="flex flex-col justify-between flex-1 mt-6">
         <nav>
