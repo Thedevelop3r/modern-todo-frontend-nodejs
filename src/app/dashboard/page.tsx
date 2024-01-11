@@ -76,14 +76,15 @@ const STATUS_MAP: STATUS_MAP_ = {
 export default function Dashboard() {
   return (
     <div className="flex flex-col flex-nowrap w-full h-full">
-      <div className="flex flex-col flex-nowrap justify-center w-full h-12 px-4 mb-10">
+      <div className="flex flex-row flex-nowrap justify-between items-center w-full h-12 px-4 mb-10 border-b-2 py-2">
+        <h1 className="text-2xl font-bold">Todos</h1>
         <button className="self-end bg-green-600 rounded-sm p-2 w-28 text-white font-bold tracking-wide hover:bg-green-700">New</button>
       </div>
       {/* Todos */}
       <div className="flex flex-col flex-nowrap w-full h-full overflow-y-auto">
         {Todos.map((todo) => (
-          <div key={todo.id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-md">
-            <div className="flex flex-row flex-nowrap justify-between w-full h-12 border-b-2">
+          <div key={todo.id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-lg">
+            <div className="flex flex-row flex-nowrap justify-between w-full h-12 border-b-[1px]">
               <div className="flex flex-col flex-nowrap w-3/4">
                 <h1 className="text-xl font-bold hover:text-gray-500 cursor-pointer">{todo.title}</h1>
               </div>

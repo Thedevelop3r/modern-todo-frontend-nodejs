@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import API_ENDPOINT from "@/utils/API_ENDPOINT.json";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -18,7 +19,7 @@ export default function Register() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      let response = await fetch("http://localhost:4000/api/user/register", {
+      let response = await fetch(API_ENDPOINT.register, {
         method: "POST",
         // allow credentials to be sent to server
         credentials: "include",

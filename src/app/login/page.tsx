@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { FormEventHandler, useState } from "react";
+import API_ENDPOINT from "@/utils/API_ENDPOINT.json";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +15,7 @@ export default function Login() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      let response = await fetch("http://localhost:4000/api/user/login", {
+      let response = await fetch(API_ENDPOINT.login, {
         method: "POST",
         // allow credentials to be sent to server
         credentials: "include",
@@ -23,7 +24,10 @@ export default function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-      if (!response.ok) throw new Error("Login failed");
+      if (!response.ok) {
+        console.log(await response.json());
+        throw new Error("Login failed");
+      };
       let json = await response.json();
 
       console.log(json);
