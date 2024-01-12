@@ -1,3 +1,5 @@
+"use client";
+import Link from "next/link";
 import React from "react";
 
 const Todos = [
@@ -74,11 +76,14 @@ const STATUS_MAP: STATUS_MAP_ = {
 };
 
 export default function Dashboard() {
+  const [modalOpen, setModalOpen] = React.useState(false);
   return (
-    <div className="flex flex-col flex-nowrap w-full h-full">
+    <div className={`flex flex-col flex-nowrap w-full h-full`}>
       <div className="flex flex-row flex-nowrap justify-between items-center w-full h-12 px-4 mb-10 border-b-2 py-2">
         <h1 className="text-2xl font-bold">Todos</h1>
-        <button className="self-end bg-green-600 rounded-sm p-2 w-28 text-white font-bold tracking-wide hover:bg-green-700">New</button>
+        <Link href={"/dashboard/create-todo"} className="self-end text-center bg-green-600 rounded-sm p-2 w-28 text-white font-bold tracking-wide hover:bg-green-700">
+          New
+        </Link>
       </div>
       {/* Todos */}
       <div className="flex flex-col flex-nowrap w-full h-full overflow-y-auto">
