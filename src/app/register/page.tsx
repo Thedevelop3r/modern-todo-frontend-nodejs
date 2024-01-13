@@ -1,13 +1,13 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import API_ENDPOINT from "@/utils/API_ENDPOINT.json";
+import { API_ENDPOINT } from "@/utils/api_endpoint";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
@@ -19,19 +19,18 @@ export default function Register() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      let response = await fetch(API_ENDPOINT.register, {
+      const response = await fetch(API_ENDPOINT.register, {
         method: "POST",
-        // allow credentials to be sent to server
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
       if (!response.ok) throw new Error("Register failed");
-      let json = await response.json();
+      const responseBody = await response.json();
 
-      console.log(json);
+      console.log(responseBody);
       setIsSubmitting(false);
       alert("Register success");
       router.push("/login");
@@ -42,9 +41,22 @@ export default function Register() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start h-screen mt-20">
+    <div className="flex flex-col items-center justify-start h-screen mt-14">
       <div className="w-full max-w-md">
         <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+              Name
+            </label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              type="text"
+              placeholder="Name"
+              required
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               Email Address

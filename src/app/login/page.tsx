@@ -1,11 +1,18 @@
 "use client";
 import Link from "next/link";
 import React, { FormEventHandler, useState } from "react";
-import API_ENDPOINT from "@/utils/API_ENDPOINT.json";
+import { API_ENDPOINT } from "@/utils/api_endpoint";
+import { useStore } from "@/store/state"; // Import the StoreApi type // Import the StoreState type
+import { useRouter } from "next/navigation";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  // Update the type of the useStore hook
+  const updateUser = useStore.getState().updateUser;
 
   const validPassword = (password: string) => {
     return password.length >= 8; //&& password.match(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/);
@@ -15,9 +22,8 @@ export default function Login() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      let response = await fetch(API_ENDPOINT.login, {
+      const response = await fetch(API_ENDPOINT.login, {
         method: "POST",
-        // allow credentials to be sent to server
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
@@ -27,13 +33,13 @@ export default function Login() {
       if (!response.ok) {
         console.log(await response.json());
         throw new Error("Login failed");
-      };
-      let json = await response.json();
-
-      console.log(json);
-      setIsSubmitting(false); // if (!res.ok) return setError(json.message);
-      console.log("login success");
-      // router.push("/");
+      }
+      const responseBody = await response.json();
+      console.log(responseBody);
+      setIsSubmitting(false);
+      // update state
+      updateUser({ user: responseBody, isLoggedIn: true });
+      router.push("/dashboard");
     } catch (error) {
       console.log(error);
       setIsSubmitting(false);
