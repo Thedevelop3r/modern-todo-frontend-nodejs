@@ -1,7 +1,9 @@
 "use client";
-import { title } from "process";
 // create todo
 import React, { useState } from "react";
+import { useStore } from "@/store/state";
+import { useRouter } from "next/navigation";
+import { API_ENDPOINT } from "@/utils/api_endpoint";
 
 function capitalizeEachWord(str: string) {
   return str.replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
@@ -15,7 +17,10 @@ export default function CreateTodo() {
   const [todo, setTodo] = useState({
     title: "",
     description: "",
+    status: "pending",
   });
+  const router = useRouter();
+  const { todos, updateTodos } = useStore();
 
   const handleSave = async () => {
     console.log(todo);
@@ -29,12 +34,24 @@ export default function CreateTodo() {
       return;
     }
     // save todo
-    const resonse = await fetch("http://localhost:4000/api/todo", {
+    const resonse = await fetch(API_ENDPOINT.todo, {
+      headers: {
+        "Content-Type": "application/json",
+      },
       method: "POST",
+      credentials: "include",
       body: JSON.stringify(todo),
     });
+    if (!resonse.ok) {
+      alert("Something went wrong");
+      return;
+    }
     const data = await resonse.json();
     console.log(data);
+    // update todos
+    updateTodos([...todos, data]);
+    // redirect to dashboard
+    router.push("/dashboard");
   };
 
   return (
@@ -69,6 +86,22 @@ export default function CreateTodo() {
           minLength={1}
           maxLength={1000}
         />
+      </div>
+      <div className="py-2 px-2 bg-slate-200 rounded-md text-center font-bold text-2xl tracking-wider h-full">
+        <select
+          className="text-center py-2 h-16 font-bold w-full text-4xl tracking-wider border-none outline-none focus:border-none focus:outline-none"
+          value={todo.status}
+          onChange={(e) => {
+            setTodo({
+              ...todo,
+              status: e.target.value,
+            });
+          }}
+        >
+          <option value="pending">Pending</option>
+          <option value="progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
       </div>
       {/* sticky save button on top right */}
       <div className="flex items-center justify-between sticky bottom-0 right-0">
