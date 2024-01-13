@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import API_ENDPOINT from "@/utils/api_endpoint.json";
+import { API_ENDPOINT } from "@/utils/api_endpoint";
 
 export default function Register() {
   const [email, setEmail] = useState("");
