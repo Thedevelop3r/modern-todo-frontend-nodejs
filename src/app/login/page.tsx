@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { FormEventHandler, useState } from "react";
-import API_ENDPOINT from "@/utils/api_endpoint.json";
+import { API_ENDPOINT } from "@/utils/api_endpoint";
 import { useStore } from "@/store/state"; // Import the StoreApi type // Import the StoreState type
 import { useRouter } from "next/navigation";
 
