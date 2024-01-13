@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import avatar from "@/assets/avatar/Men.svg";
@@ -9,7 +9,8 @@ import { useStore } from "@/store/state";
 
 export default function Sidebar({ navLinks }: { navLinks: Array<{ href: string; label: string }> }) {
   const path = usePathname();
-  const user = useStore.getState().user;
+  const { user } = useStore();
+
   return (
     <div className="flex flex-col w-48 h-screen px-4 py-8 bg-slate-50 border-r dark:bg-gray-800 dark:border-gray-600">
       <div className="flex flex-col items-center mt-6 -mx-2">
