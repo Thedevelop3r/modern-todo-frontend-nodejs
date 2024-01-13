@@ -1,11 +1,84 @@
+"use client";
+import { title } from "process";
 // create todo
-import React from "react";
+import React, { useState } from "react";
+
+function capitalizeEachWord(str: string) {
+  return str.replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
+}
+
+function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 export default function CreateTodo() {
+  const [todo, setTodo] = useState({
+    title: "",
+    description: "",
+  });
+
+  const handleSave = async () => {
+    console.log(todo);
+    // validate input
+    if (todo.title.length < 1 || todo.title.length > 40) {
+      alert("Title must be between 1 and 40 characters");
+      return;
+    }
+    if (todo.description.length < 1 || todo.description.length > 1000) {
+      alert("Description must be between 1 and 1000 characters");
+      return;
+    }
+    // save todo
+    const resonse = await fetch("http://localhost:4000/api/todo", {
+      method: "POST",
+      body: JSON.stringify(todo),
+    });
+    const data = await resonse.json();
+    console.log(data);
+  };
+
   return (
-    <div className="flex flex-col w-full h-full">
-      <div className="py-4 px-2 bg-slate-200 rounded-md text-center font-bold text-2xl tracking-wider">
-        Create New Todo
+    <div className="flex flex-col w-full h-full gap-2">
+      <div className="py-2 px-2 bg-slate-200 rounded-md text-center font-bold text-2xl tracking-wider">
+        <textarea
+          className="text-center py-2 h-16 font-bold w-full text-4xl tracking-wider border-none outline-none focus:border-none focus:outline-none"
+          value={todo.title}
+          placeholder="Title"
+          onChange={(e) => {
+            setTodo({
+              ...todo,
+              title: capitalizeEachWord(e.target.value),
+            });
+          }}
+          minLength={1}
+          maxLength={40}
+        />
+      </div>
+
+      <div className="py-2 px-2 bg-slate-200 rounded-md text-center font-bold text-2xl tracking-wider h-full">
+        <textarea
+          className="text-left font-semibold py-2 px-2 tracking-wider text-normal h-dvh w-full border-none outline-none focus:border-none focus:outline-none"
+          value={todo.description}
+          placeholder="Description"
+          onChange={(e) => {
+            setTodo({
+              ...todo,
+              description: e.target.value,
+            });
+          }}
+          minLength={1}
+          maxLength={1000}
+        />
+      </div>
+      {/* sticky save button on top right */}
+      <div className="flex items-center justify-between sticky bottom-0 right-0">
+        <button className="border-2 py-2 px-4 bg-green-500 text-white rounded-md text-center font-bold text-sm tracking-wider" onClick={handleSave}>
+          Save
+        </button>
+        <div className="ml-auto pr-4">
+          <div className="">Title size: {todo.title.length}/40</div>
+          <div className="">Description size: {todo.description.length}/1000</div>
+        </div>
       </div>
     </div>
   );

@@ -1,73 +1,7 @@
 "use client";
 import Link from "next/link";
-import React from "react";
-
-const Todos = [
-  {
-    id: 1,
-    title: "Create a new project",
-    description: `
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    `,
-    status: "progress",
-  },
-  {
-    id: 2,
-    title: "Create a new project",
-    description: `
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    `,
-    status: "progress",
-  },
-  {
-    id: 3,
-    title: "Create a new project",
-    description: "Create a new project with React and TailwindCSS",
-    status: "done",
-  },
-  {
-    id: 4,
-    title: "Create a new project",
-    description: `
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.
-    `,
-    status: "pending",
-  },
-  {
-    id: 5,
-    title: "Create a new project",
-    description: "Create a new project with React and TailwindCSS",
-    status: "progress",
-  },
-  {
-    id: 6,
-    title: "Create a new project",
-    description: "Create a new project with React and TailwindCSS",
-    status: "done",
-  },
-];
-
-type STATUS_MAP_ = {
-  [key: string]: string;
-};
+import React, { useEffect } from "react";
+import { useStore } from "@/store/state";
 
 const STATUS_MAP: STATUS_MAP_ = {
   done: "bg-green-500",
@@ -75,8 +9,29 @@ const STATUS_MAP: STATUS_MAP_ = {
   pending: "bg-red-500",
 };
 
+const getAllTodos = async () => {
+  return fetch("http://localhost:4000/api/todo", {
+    method: "GET",
+    credentials: "include",
+  });
+};
+
 export default function Dashboard() {
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const todos = useStore.getState().todos;
+
+  useEffect(() => {
+    console.log("Dashboard mounted");
+    getAllTodos()
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        useStore.getState().updateTodos(data);
+      });
+    return () => {
+      console.log("Dashboard unmounted");
+    };
+  }, []);
+
   return (
     <div className={`flex flex-col flex-nowrap w-full h-full`}>
       <div className="flex flex-row flex-nowrap justify-between items-center w-full h-12 px-4 mb-10 border-b-2 py-2">
@@ -87,8 +42,8 @@ export default function Dashboard() {
       </div>
       {/* Todos */}
       <div className="flex flex-col flex-nowrap w-full h-full overflow-y-auto">
-        {Todos.map((todo) => (
-          <div key={todo.id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-lg">
+        {todos.map((todo) => (
+          <div key={todo._id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-lg">
             <div className="flex flex-row flex-nowrap justify-between w-full h-12 border-b-[1px]">
               <div className="flex flex-col flex-nowrap w-3/4">
                 <h1 className="text-xl font-bold hover:text-gray-500 cursor-pointer">{todo.title}</h1>

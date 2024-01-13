@@ -7,7 +7,7 @@ const user: User = {
   isLoggedIn: false,
 };
 
-const todos: Todo = [{ _id: "", title: "", description: "", isCompleted: false, createdAt: "", updatedAt: "" }];
+const todos: Todo = [{ _id: "", title: "", description: "", status: "", isCompleted: false, createdAt: "", updatedAt: "" }];
 
 const useStore = createStore<StoreState>((set, get) => ({
   user: { ...user },

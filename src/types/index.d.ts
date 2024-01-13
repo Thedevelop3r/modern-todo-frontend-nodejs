@@ -10,6 +10,7 @@ type Todo = Array<{
   title: string;
   description: string;
   isCompleted: boolean;
+  status: string;
   createdAt: string;
   updatedAt: string;
 }>;
@@ -20,3 +21,8 @@ type StoreState = {
   updateUser: ({ user, isLoggedIn }: { user: User; isLoggedIn: Boolean }) => void;
   updateTodos: (todos: Todo) => void;
 };
+
+type STATUS_MAP_ = {
+  [key: string]: string;
+};
+
