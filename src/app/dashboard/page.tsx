@@ -29,6 +29,17 @@ export default function Dashboard() {
     setLoading(false);
   };
 
+  const deleteTodo = async (todoId: string | undefined) => {
+    setLoading(true);
+    const response = await fetch(`${API_ENDPOINT.todo}/${todoId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const data = await response.json();
+    updateTodos([...todos.filter((t) => t._id !== todoId)]);
+    setLoading(false);
+  };
+
   useLayoutEffect(() => {
     getAllTodos()
       .then((response) => {
@@ -64,11 +75,24 @@ export default function Dashboard() {
           todos?.map((todo) => (
             <div key={todo._id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-lg">
               <div className="flex flex-row flex-nowrap justify-between w-full h-12 border-b-[1px]">
-                <div className="flex flex-col flex-nowrap w-3/4">
+                <div className="flex flex-crow items-center flex-nowrap w-3/4">
                   <h1 className="text-xl font-bold hover:text-gray-500 cursor-pointer">{todo.title}</h1>
+                  <div className="ml-4 flex flex-row gap-2">
+                    <Link className="text-sm text-center font-semibold text-gray-900 rounded-md bg-gray-200 px-2" href={"/dashboard/edit-todo/" + todo._id}>
+                      edit
+                    </Link>
+                    <button
+                      onClick={() => {
+                        deleteTodo(todo?._id);
+                      }}
+                      className="text-sm text-center font-semibold text-red-900 rounded-md bg-red-100 px-2"
+                    >
+                      delete
+                    </button>
+                  </div>
                 </div>
                 <div className="flex flex-col flex-nowrap justify-center w-24">
-                  <h1 className={`text-sm font-bold text-center text-white p-1 rounded-3xl ${STATUS_MAP[todo.status]}`}>{todo.status}</h1>
+                  <h1 className={`text-sm font-bold text-center text-white p-1 rounded-3xl ${STATUS_MAP[todo?.status ?? ""]}`}>{todo?.status}</h1>
                 </div>
               </div>
               <div className="flex flex-row flex-nowrap w-full h-16 mt-2">
