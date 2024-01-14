@@ -46,7 +46,7 @@ export default function CreateTodo() {
       alert("Something went wrong");
       return;
     }
-    const data = await resonse.json();
+    const data: Todo = await resonse.json();
     console.log(data);
     // update todos
     updateTodos([...todos, data]);
@@ -87,10 +87,11 @@ export default function CreateTodo() {
           maxLength={1000}
         />
       </div>
-      <div className="py-2 px-2 bg-slate-200 rounded-md text-center font-bold text-2xl tracking-wider h-full">
+      <div className="py-2 px-2 bg-slate-200 rounded-md text-center font-bold text-sm tracking-wider h-full">
         <select
-          className="text-center py-2 h-16 font-bold w-full text-4xl tracking-wider border-none outline-none focus:border-none focus:outline-none"
-          value={todo.status}
+          defaultValue={"pending"}
+          className="text-center py-2 h-10 font-bold w-full text-lg tracking-wider border-none outline-none focus:border-none focus:outline-none"
+          value={todo?.status}
           onChange={(e) => {
             setTodo({
               ...todo,
