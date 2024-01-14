@@ -75,7 +75,7 @@ export default function Dashboard() {
           todos?.map((todo) => (
             <div key={todo._id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-lg">
               <div className="flex flex-row flex-nowrap justify-between w-full h-12 border-b-[1px]">
-                <div className="flex flex-crow items-center flex-nowrap w-3/4">
+                <div className="flex flex-row items-center flex-nowrap w-3/4">
                   <h1 className="text-xl font-bold hover:text-gray-500 cursor-pointer">{todo.title}</h1>
                   <div className="ml-4 flex flex-row gap-2">
                     <Link className="text-sm text-center font-semibold text-gray-900 rounded-md bg-gray-200 px-2" href={"/dashboard/edit-todo/" + todo._id}>
