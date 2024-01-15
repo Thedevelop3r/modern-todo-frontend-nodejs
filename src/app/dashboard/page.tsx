@@ -2,14 +2,8 @@
 import Link from "next/link";
 import React from "react";
 import { useStore } from "@/store/state";
-import { getAllTodos, deleteTodo } from "@/utils";
+import { getAllTodos, deleteTodo, STATUS_MAP } from "@/utils";
 import Pagination from "@/components/Dashboard/Pagination";
-
-const STATUS_MAP: STATUS_MAP_ = {
-  completed: "bg-green-500",
-  progress: "bg-yellow-500",
-  pending: "bg-red-500",
-};
 
 // TODO: 1. add pagination, 2. add filter - acc-decend client-server, 3. add search == pending
 
@@ -136,7 +130,9 @@ export default function Dashboard() {
             <div key={todo._id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-lg">
               <div className="flex flex-row flex-nowrap justify-between w-full h-12 border-b-[1px]">
                 <div className="flex flex-row items-center flex-nowrap w-3/4">
-                  <h1 className="text-xl font-bold hover:text-gray-500 cursor-pointer">{todo.title}</h1>
+                  <Link href={`/dashboard/todo/${todo._id}`} className="text-xl font-bold hover:text-gray-500 cursor-pointer">
+                    {todo.title}
+                  </Link>
                   <div className="ml-4 flex flex-row gap-2">
                     <Link className="text-sm text-center font-semibold text-gray-900 rounded-md bg-gray-200 px-2" href={"/dashboard/edit-todo/" + todo._id}>
                       edit
