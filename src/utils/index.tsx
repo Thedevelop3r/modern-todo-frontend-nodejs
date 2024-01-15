@@ -80,9 +80,9 @@ const capitalizeFirstLetter = (str: string) => {
 };
 
 const STATUS_MAP: STATUS_MAP_ = {
-  completed: "bg-green-500",
-  progress: "bg-yellow-500",
-  pending: "bg-red-500",
+  "completed": "bg-green-500",
+  "progress": "bg-yellow-500",
+  "pending": "bg-red-500",
 };
 
 export { STATUS_MAP,updateUserProfile ,getAllTodos, refreshTodos, deleteTodo, getUser, capitalizeEachWord, capitalizeFirstLetter, getTodo, updateTodo, getProfile };

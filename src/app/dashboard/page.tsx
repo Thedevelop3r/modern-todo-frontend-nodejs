@@ -148,7 +148,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex flex-col flex-nowrap justify-center w-24">
-                  <h1 className={`text-sm font-bold text-center text-white p-1 rounded-3xl ${STATUS_MAP[todo?.status ?? ""]}`}>{todo?.status}</h1>
+                  <h1 className={`text-sm font-bold text-center text-white p-1 rounded-3xl ${todo?.status === "pending"? "bg-red-500" : todo?.status === "completed" ? "bg-green-500" : "bg-yellow-500"   }`}>{todo?.status}</h1>
                 </div>
               </div>
               <div className="flex flex-row flex-nowrap w-full h-16 mt-2">
