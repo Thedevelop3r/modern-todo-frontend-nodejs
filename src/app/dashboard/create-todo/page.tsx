@@ -49,7 +49,9 @@ export default function CreateTodo() {
     const data: Todo = await resonse.json();
     console.log(data);
     // update todos
-    updateTodos([...todos, data]);
+    updateTodos({
+      todos: [...todos, data],
+    });
     // redirect to dashboard
     router.push("/dashboard");
   };

@@ -12,6 +12,29 @@ const todos: Todos = [];
 const useStore = create<StoreState>((set, get) => ({
   user: { ...user },
   todos: [...todos],
+  todoPagination: {
+    page: 1,
+    limit: 10,
+  },
+  todoMeta: {
+    totalRecords: 0,
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+  },
+
+  updateTodoMeta: (todoMeta: TodoMeta) => {
+    set((state: StoreState) => {
+      return { ...state, todoMeta };
+    });
+  },
+
+  updatePagination: ({ page, limit }: { page: number; limit: number }) => {
+    set((state: StoreState) => {
+      return { ...state, todoPagination: { page, limit } };
+    });
+  },
+
   updateUser: ({ user, isLoggedIn }: { user: User | null; isLoggedIn: Boolean | null }) => {
     set((state: StoreState) => {
       let updatedUser = { ...state.user };
@@ -23,9 +46,17 @@ const useStore = create<StoreState>((set, get) => ({
       return { ...state, user: updatedUser };
     });
   },
-  updateTodos: (todos: Todos) => {
+  updateTodos: ({ todos, todoMeta }: { todos: Todos; todoMeta?: TodoMeta | undefined }) => {
     set((state: StoreState) => {
-      return { ...state, todos: todos ? todos : state.todos };
+      const updatedTodos = [...todos].sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateA > dateB ? -1 : 1;
+      });
+      if (todoMeta) {
+        return { ...state, todos: updatedTodos, todoMeta };
+      }
+      return { ...state, todos: todos ? updatedTodos : state.todos };
     });
   },
 }));

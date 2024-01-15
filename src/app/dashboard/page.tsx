@@ -2,7 +2,8 @@
 import Link from "next/link";
 import React, { useLayoutEffect } from "react";
 import { useStore } from "@/store/state";
-import { API_ENDPOINT } from "@/utils/api_endpoint";
+import { getAllTodos, deleteTodo, refreshTodos } from "@/utils";
+import Pagination from "@/components/Dashboard/Pagination";
 
 const STATUS_MAP: STATUS_MAP_ = {
   completed: "bg-green-500",
@@ -10,38 +11,25 @@ const STATUS_MAP: STATUS_MAP_ = {
   pending: "bg-red-500",
 };
 
-const getAllTodos = async () => {
-  return fetch(API_ENDPOINT.todo, {
-    method: "GET",
-    credentials: "include",
-  });
-};
+// TODO: 1. add pagination, 2. add filter, 3. add search - pending
 
 export default function Dashboard() {
   const [loading, setLoading] = React.useState(false);
-  const { todos, updateTodos, updateUser } = useStore();
+  const { todos, updateTodos, todoPagination, updatePagination, todoMeta } = useStore();
 
-  const refreshTodos = async () => {
-    setLoading(true);
-    const response = await getAllTodos();
-    const data = await response.json();
-    updateTodos(data?.data);
-    setLoading(false);
+  const handlePaginationChange = (page: number) => {
+    updatePagination({ page: page, limit: todoPagination.limit });
+    handleRefreshTodos();
   };
 
-  const deleteTodo = async (todoId: string | undefined) => {
+  const handleGetAllTodos = async () => {
     setLoading(true);
-    const response = await fetch(`${API_ENDPOINT.todo}/${todoId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    const data = await response.json();
-    updateTodos([...todos.filter((t) => t._id !== todoId)]);
-    setLoading(false);
-  };
-
-  useLayoutEffect(() => {
-    getAllTodos()
+    getAllTodos({
+      filter: {
+        page: todoPagination.page,
+        limit: todoPagination.limit,
+      },
+    })
       .then((response) => {
         console.log("getting todos");
         return response;
@@ -49,7 +37,75 @@ export default function Dashboard() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        updateTodos(data?.data);
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
+
+  const handleRefreshTodos = async () => {
+    setLoading(true);
+    getAllTodos({
+      filter: {
+        page: todoPagination.page,
+        limit: todoPagination.limit,
+      },
+    })
+      .then((response) => {
+        console.log("getting todos");
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
+
+  const handleDeleteTodo = async (todoId: string | undefined) => {
+    setLoading(true);
+    deleteTodo(todoId)
+      .then((response) => {
+        console.log("deleting todo");
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .then(handleGetAllTodos)
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useLayoutEffect(() => {
+    getAllTodos({
+      filter: {
+        page: todoPagination.page,
+        limit: todoPagination.limit,
+      },
+    })
+      .then((response) => {
+        console.log("getting todos");
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
       })
       .catch((err) => {
         console.log(err);
@@ -61,7 +117,7 @@ export default function Dashboard() {
       <div className="flex flex-row flex-nowrap justify-between items-center w-full h-12 px-4 mb-10 border-b-2 py-2">
         <h1 className="text-2xl font-bold">Todos</h1>
         <div>
-          <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={refreshTodos}>
+          <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={handleRefreshTodos}>
             Refresh
           </button>
           <Link href={"/dashboard/create-todo"} className="mx-2 self-end text-center bg-green-600 rounded-md py-2 px-6 w-36 text-white font-bold tracking-wide hover:bg-green-700">
@@ -83,7 +139,7 @@ export default function Dashboard() {
                     </Link>
                     <button
                       onClick={() => {
-                        deleteTodo(todo?._id);
+                        handleDeleteTodo(todo?._id);
                       }}
                       className="text-sm text-center font-semibold text-red-900 rounded-md bg-red-100 px-2"
                     >
@@ -103,6 +159,7 @@ export default function Dashboard() {
             </div>
           ))}
       </div>
+      <Pagination currentPage={todoPagination.page} totalPages={todoMeta?.totalPages || 0} onPageChange={handlePaginationChange} />
     </div>
   );
 }

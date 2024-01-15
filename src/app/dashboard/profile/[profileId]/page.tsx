@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useStore } from "@/store/state";
 import { API_ENDPOINT } from "@/utils/api_endpoint";
+import { getProfile } from "@/utils";
 
 export default function Profile({ params }: { params: { profileId: string } }) {
   const [profile, setProfile] = useState<User | null>(null);
@@ -10,20 +10,31 @@ export default function Profile({ params }: { params: { profileId: string } }) {
   const router = useRouter();
   const profileId = params?.profileId;
 
-  const getProfile = async () => {
+  const handleGetProfile = async () => {
     setLoading(true);
-    const response = await fetch(`${API_ENDPOINT.me}`, {
-      method: "GET",
-      credentials: "include",
-    });
-    const data = await response.json();
-    setProfile(data);
-    setLoading(false);
+    getProfile()
+      .then((response) => {
+        console.log("getting profile");
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setProfile(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
     if (profileId) {
-      getProfile();
+      handleGetProfile();
     }
   }, [profileId]);
 
