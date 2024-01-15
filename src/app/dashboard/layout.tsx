@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { updateUser, updateTodos, updatePagination } = useStore();
+  const { updateUser, updateTodos, updatePagination, todoPagination } = useStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         console.log(data);
         updateUser({ user: data, isLoggedIn: true });
       })
-      .then(() => getAllTodos({ filter: { page: 1, limit: 10 } }))
+      .then(() => getAllTodos({ filter: { page: todoPagination.page, limit: todoPagination.limit } }))
       .then((response) => {
         console.log("getting todos");
         return response;

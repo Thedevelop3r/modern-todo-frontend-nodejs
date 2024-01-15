@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { useStore } from "@/store/state";
-import { getAllTodos, deleteTodo, refreshTodos } from "@/utils";
+import { getAllTodos, deleteTodo } from "@/utils";
 import Pagination from "@/components/Dashboard/Pagination";
 
 const STATUS_MAP: STATUS_MAP_ = {
@@ -17,13 +17,48 @@ export default function Dashboard() {
   const [loading, setLoading] = React.useState(false);
   const { todos, updateTodos, todoPagination, updatePagination, todoMeta } = useStore();
 
-  const handlePaginationChange = (page: number) => {
-    updatePagination({ page: page, limit: 3 /*todoPagination.limit*/ });
-    handleRefreshTodos();
+  const handlePaginationChange = async (page: number) => {
+    setLoading(true);
+    updatePagination({ page: page, limit: todoPagination.limit });
+    getAllTodos({
+      filter: {
+        page: page,
+        limit: todoPagination.limit,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
-  const handleResetPaginationChange = () => {
-    updatePagination({ page: 1, limit: 3 });
-    handleRefreshTodos();
+  const handleResetPaginationChange = async () => {
+    updatePagination({ page: 1, limit: todoPagination.limit });
+    getAllTodos({
+      filter: {
+        page: 1,
+        limit: todoPagination.limit,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleGetAllTodos = async () => {
@@ -34,13 +69,8 @@ export default function Dashboard() {
         limit: todoPagination.limit,
       },
     })
-      .then((response) => {
-        console.log("getting todos");
-        return response;
-      })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         updateTodos({ todos: data?.data, todoMeta: data?.meta });
         setLoading(false);
       })
@@ -58,13 +88,8 @@ export default function Dashboard() {
         limit: todoPagination.limit,
       },
     })
-      .then((response) => {
-        console.log("getting todos");
-        return response;
-      })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         updateTodos({ todos: data?.data, todoMeta: data?.meta });
         setLoading(false);
       })
@@ -77,14 +102,7 @@ export default function Dashboard() {
   const handleDeleteTodo = async (todoId: string | undefined) => {
     setLoading(true);
     deleteTodo(todoId)
-      .then((response) => {
-        console.log("deleting todo");
-        return response;
-      })
       .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
       .then(handleGetAllTodos)
       .catch((err) => {
         console.log(err);
@@ -94,27 +112,6 @@ export default function Dashboard() {
         setLoading(false);
       });
   };
-
-  useLayoutEffect(() => {
-    getAllTodos({
-      filter: {
-        page: todoPagination.page,
-        limit: todoPagination.limit,
-      },
-    })
-      .then((response) => {
-        console.log("getting todos");
-        return response;
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        updateTodos({ todos: data?.data, todoMeta: data?.meta });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   return (
     <div className={`flex flex-col flex-nowrap w-full h-full`}>
@@ -167,7 +164,7 @@ export default function Dashboard() {
             </div>
           ))}
       </div>
-      <Pagination currentPage={todoPagination.page} totalPages={todoMeta?.totalPages || 0} onPageChange={handlePaginationChange} />
+      {loading == false && <Pagination currentPage={todoPagination.page} totalPages={todoMeta?.totalPages || 0} onPageChange={handlePaginationChange} />}
     </div>
   );
 }
