@@ -1,8 +1,10 @@
 type User = {
-  name: string;
-  email: string;
-  token: string;
-  isLoggedIn: boolean;
+  _id?: string;
+  name?: string;
+  email?: string;
+  token?: string;
+  isLoggedIn?: boolean;
+  status?: string;
 };
 
 type Todos = Array<{
@@ -26,9 +28,9 @@ type Todo = {
 };
 
 type StoreState = {
-  user: User;
+  user: User | null;
   todos: Todos;
-  updateUser: ({ user, isLoggedIn }: { user: User; isLoggedIn: Boolean }) => void;
+  updateUser: ({ user, isLoggedIn }: { user: User | null; isLoggedIn: Boolean | null }) => void;
   updateTodos: (todos: Todos) => void;
 };
 

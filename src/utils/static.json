@@ -1,7 +1,6 @@
 {
   "dashboardNavLinks": [
-    { "href": "/dashboard", "label": "Home" },
-    { "href": "/dashboard/todos", "label": "Todos" }
+    { "href": "/dashboard", "label": "Home" }
   ],
 
   "generalLinks": [

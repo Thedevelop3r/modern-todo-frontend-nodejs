@@ -1,4 +1,4 @@
-import { createStore, create } from "zustand";
+import { create } from "zustand";
 
 const user: User = {
   name: "",
@@ -7,22 +7,24 @@ const user: User = {
   isLoggedIn: false,
 };
 
-const todos: Todo = [{ _id: "", title: "", description: "", status: "", isCompleted: false, createdAt: "", updatedAt: "" }];
+const todos: Todos = [];
 
 const useStore = create<StoreState>((set, get) => ({
   user: { ...user },
   todos: [...todos],
-  updateUser: ({ user, isLoggedIn }: { user: User; isLoggedIn: Boolean }) => {
+  updateUser: ({ user, isLoggedIn }: { user: User | null; isLoggedIn: Boolean | null }) => {
     set((state: StoreState) => {
-      const updatedUser = { ...state.user, ...user };
-      isLoggedIn ? (updatedUser.isLoggedIn = true) : (updatedUser.isLoggedIn = false);
+      let updatedUser = { ...state.user };
+      if (user) {
+        updatedUser = { ...updatedUser, ...user };
+        isLoggedIn ? (updatedUser.isLoggedIn = true) : (updatedUser.isLoggedIn = false);
+      }
       console.log(updatedUser);
-      return { ...state, user: user ? updatedUser : state.user };
+      return { ...state, user: updatedUser };
     });
   },
-  updateTodos: (todos: Todo) => {
+  updateTodos: (todos: Todos) => {
     set((state: StoreState) => {
-
       return { ...state, todos: todos ? todos : state.todos };
     });
   },
