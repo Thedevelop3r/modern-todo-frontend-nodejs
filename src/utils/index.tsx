@@ -49,6 +49,17 @@ const getProfile = async () => {
   });
 };
 
+const updateUserProfile = async (user: User | null) => {
+  return fetch(`${API_ENDPOINT.updateUser}`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  });
+};
+
 const updateTodo = async (todoId: string, todo: Todo | null) => {
   return fetch(`${API_ENDPOINT.todo}/${todoId}`, {
     method: "PUT",
@@ -68,4 +79,10 @@ const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export { getAllTodos, refreshTodos, deleteTodo, getUser, capitalizeEachWord, capitalizeFirstLetter, getTodo, updateTodo, getProfile };
+const STATUS_MAP: STATUS_MAP_ = {
+  completed: "bg-green-500",
+  progress: "bg-yellow-500",
+  pending: "bg-red-500",
+};
+
+export { STATUS_MAP,updateUserProfile ,getAllTodos, refreshTodos, deleteTodo, getUser, capitalizeEachWord, capitalizeFirstLetter, getTodo, updateTodo, getProfile };
