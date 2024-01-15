@@ -2,7 +2,6 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useStore } from "@/store/state";
-import { API_ENDPOINT } from "@/utils/api_endpoint";
 import { capitalizeEachWord, getTodo, updateTodo } from "@/utils";
 
 export default function EditTodo({ params }: { params: { todoId: string } }) {
@@ -11,6 +10,12 @@ export default function EditTodo({ params }: { params: { todoId: string } }) {
   const router = useRouter();
   const todoId = params?.todoId;
   const { updateTodos, todos } = useStore();
+
+  const handleViewTodo = async () => {
+    setLoading(true);
+    router.push(`/dashboard/todo/${todoId}`);
+    setLoading(false);
+  };
 
   const handleUpdateTodo = async () => {
     setLoading(true);
@@ -31,7 +36,7 @@ export default function EditTodo({ params }: { params: { todoId: string } }) {
       })
       .finally(() => {
         setLoading(false);
-        router.push("/dashboard");
+        router.push("/dashboard/todo/" + todoId);
       });
   };
 
@@ -69,6 +74,9 @@ export default function EditTodo({ params }: { params: { todoId: string } }) {
         <div className="flex flex-row flex-nowrap justify-between items-center w-full h-12 px-4 mb-10 border-b-2 py-2">
           <h1 className="text-2xl font-bold">Edit Todo</h1>
           <div>
+            <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={handleViewTodo}>
+              Preview
+            </button>
             <button
               className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white"
               onClick={() => {
@@ -130,7 +138,7 @@ export default function EditTodo({ params }: { params: { todoId: string } }) {
 
           {/* sticky save button on top right */}
           <div className="flex items-center justify-between sticky bottom-0 right-0">
-            <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={handleUpdateTodo}>
+            <button className="mx-2 rounded-md border-green-600 bg-green-600 border-2 py-1 px-6 text-white hover:bg-white hover:text-green-900" onClick={handleUpdateTodo}>
               Update
             </button>
             <div className="ml-auto pr-4">
