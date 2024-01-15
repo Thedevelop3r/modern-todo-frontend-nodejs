@@ -11,14 +11,18 @@ const STATUS_MAP: STATUS_MAP_ = {
   pending: "bg-red-500",
 };
 
-// TODO: 1. add pagination, 2. add filter, 3. add search - pending
+// TODO: 1. add pagination, 2. add filter - acc-decend client-server, 3. add search == pending
 
 export default function Dashboard() {
   const [loading, setLoading] = React.useState(false);
   const { todos, updateTodos, todoPagination, updatePagination, todoMeta } = useStore();
 
   const handlePaginationChange = (page: number) => {
-    updatePagination({ page: page, limit: todoPagination.limit });
+    updatePagination({ page: page, limit: 3 /*todoPagination.limit*/ });
+    handleRefreshTodos();
+  };
+  const handleResetPaginationChange = () => {
+    updatePagination({ page: 1, limit: 3 });
     handleRefreshTodos();
   };
 
@@ -120,6 +124,9 @@ export default function Dashboard() {
           <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={handleRefreshTodos}>
             Refresh
           </button>
+          <button className="rounded-md border-yellow-600 border-2 py-1 px-1 hover:bg-yellow-600 hover:text-white" onClick={handleResetPaginationChange}>
+            Reset
+          </button>
           <Link href={"/dashboard/create-todo"} className="mx-2 self-end text-center bg-green-600 rounded-md py-2 px-6 w-36 text-white font-bold tracking-wide hover:bg-green-700">
             New
           </Link>
@@ -152,8 +159,9 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex flex-row flex-nowrap w-full h-16 mt-2">
-                <div className="flex flex-col flex-nowrap justify-center w-full">
-                  <p className="text-sm font-normal text-wrap whitespace-wrap line-clamp-6">{todo.description}</p>
+                <div className="flex flex-col flex-nowrap justify-center w-full h-full">
+                  {/* <p className="text-sm font-normal text-clip whitespace-normal h-16 w-full"></p> */}
+                  <p className="line-clamp-3 text-clip whitespace-normal min-w-[300px] max-w-[900px]">{todo.description}</p>
                 </div>
               </div>
             </div>
