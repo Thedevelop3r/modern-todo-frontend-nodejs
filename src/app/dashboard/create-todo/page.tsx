@@ -1,5 +1,4 @@
 "use client";
-// create todo
 import React, { useState } from "react";
 import { useStore } from "@/store/state";
 import { useRouter } from "next/navigation";
@@ -7,10 +6,6 @@ import { API_ENDPOINT } from "@/utils/api_endpoint";
 
 function capitalizeEachWord(str: string) {
   return str.replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
-}
-
-function capitalizeFirstLetter(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export default function CreateTodo() {
@@ -49,7 +44,9 @@ export default function CreateTodo() {
     const data: Todo = await resonse.json();
     console.log(data);
     // update todos
-    updateTodos([...todos, data]);
+    updateTodos({
+      todos: [...todos, data],
+    });
     // redirect to dashboard
     router.push("/dashboard");
   };

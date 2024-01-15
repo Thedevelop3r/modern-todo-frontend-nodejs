@@ -1,17 +1,8 @@
-// nextjs edit-todo [todoId].tsx
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useStore } from "@/store/state";
-import { API_ENDPOINT } from "@/utils/api_endpoint";
-
-function capitalizeEachWord(str: string) {
-  return str.replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
-}
-
-function capitalizeFirstLetter(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import { capitalizeEachWord, getTodo, updateTodo } from "@/utils";
 
 export default function EditTodo({ params }: { params: { todoId: string } }) {
   const [todo, setTodo] = useState<Todo | null>(null);
@@ -20,36 +11,60 @@ export default function EditTodo({ params }: { params: { todoId: string } }) {
   const todoId = params?.todoId;
   const { updateTodos, todos } = useStore();
 
-  const getTodo = async () => {
+  const handleViewTodo = async () => {
     setLoading(true);
-    const response = await fetch(`${API_ENDPOINT.todo}/${todoId}`, {
-      method: "GET",
-      credentials: "include",
-    });
-    const data = await response.json();
-    setTodo(data);
+    router.push(`/dashboard/todo/${todoId}`);
     setLoading(false);
   };
 
-  const updateTodo = async () => {
+  const handleUpdateTodo = async () => {
     setLoading(true);
-    const response = await fetch(`${API_ENDPOINT.todo}/${todoId}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(todo),
-    });
-    const data = await response.json();
-    updateTodos([...todos.filter((t) => t._id !== todoId), data]);
-    setLoading(false);
-    router.push("/dashboard");
+    updateTodo(todoId, todo)
+      .then((response) => {
+        console.log("updating todo");
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        updateTodos({ todos: todos.map((todo) => (todo._id === todoId ? data : todo)) });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+        router.push("/dashboard/todo/" + todoId);
+      });
+  };
+
+  const handleGetTodo = async () => {
+    setLoading(true);
+    getTodo(todoId)
+      .then((response) => {
+        console.log("getting todo");
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setTodo({
+          ...data,
+          title: capitalizeEachWord(data.title),
+        });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
     if (todoId) {
-      getTodo();
+      handleGetTodo();
     }
   }, [todoId]);
 
@@ -59,7 +74,15 @@ export default function EditTodo({ params }: { params: { todoId: string } }) {
         <div className="flex flex-row flex-nowrap justify-between items-center w-full h-12 px-4 mb-10 border-b-2 py-2">
           <h1 className="text-2xl font-bold">Edit Todo</h1>
           <div>
-            <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={getTodo}>
+            <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={handleViewTodo}>
+              Preview
+            </button>
+            <button
+              className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white"
+              onClick={() => {
+                handleGetTodo();
+              }}
+            >
               Refresh
             </button>
           </div>
@@ -115,7 +138,7 @@ export default function EditTodo({ params }: { params: { todoId: string } }) {
 
           {/* sticky save button on top right */}
           <div className="flex items-center justify-between sticky bottom-0 right-0">
-            <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={updateTodo}>
+            <button className="mx-2 rounded-md border-green-600 bg-green-600 border-2 py-1 px-6 text-white hover:bg-white hover:text-green-900" onClick={handleUpdateTodo}>
               Update
             </button>
             <div className="ml-auto pr-4">

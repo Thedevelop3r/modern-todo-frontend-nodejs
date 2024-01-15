@@ -1,68 +1,122 @@
 "use client";
 import Link from "next/link";
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { useStore } from "@/store/state";
-import { API_ENDPOINT } from "@/utils/api_endpoint";
+import { getAllTodos, deleteTodo, STATUS_MAP } from "@/utils";
+import Pagination from "@/components/Dashboard/Pagination";
 
-const STATUS_MAP: STATUS_MAP_ = {
-  completed: "bg-green-500",
-  progress: "bg-yellow-500",
-  pending: "bg-red-500",
-};
-
-const getAllTodos = async () => {
-  return fetch(API_ENDPOINT.todo, {
-    method: "GET",
-    credentials: "include",
-  });
-};
+// TODO: 1. add pagination, 2. add filter - acc-decend client-server, 3. add search == pending
 
 export default function Dashboard() {
   const [loading, setLoading] = React.useState(false);
-  const { todos, updateTodos, updateUser } = useStore();
+  const { todos, updateTodos, todoPagination, updatePagination, todoMeta } = useStore();
 
-  const refreshTodos = async () => {
+  const handlePaginationChange = async (page: number) => {
     setLoading(true);
-    const response = await getAllTodos();
-    const data = await response.json();
-    updateTodos(data?.data);
-    setLoading(false);
-  };
-
-  const deleteTodo = async (todoId: string | undefined) => {
-    setLoading(true);
-    const response = await fetch(`${API_ENDPOINT.todo}/${todoId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    const data = await response.json();
-    updateTodos([...todos.filter((t) => t._id !== todoId)]);
-    setLoading(false);
-  };
-
-  useLayoutEffect(() => {
-    getAllTodos()
-      .then((response) => {
-        console.log("getting todos");
-        return response;
-      })
+    updatePagination({ page: page, limit: todoPagination.limit });
+    getAllTodos({
+      filter: {
+        page: page,
+        limit: todoPagination.limit,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        updateTodos(data?.data);
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  }, []);
+  };
+  const handleResetPaginationChange = async () => {
+    updatePagination({ page: 1, limit: todoPagination.limit });
+    getAllTodos({
+      filter: {
+        page: 1,
+        limit: todoPagination.limit,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleGetAllTodos = async () => {
+    setLoading(true);
+    getAllTodos({
+      filter: {
+        page: todoPagination.page,
+        limit: todoPagination.limit,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
+
+  const handleRefreshTodos = async () => {
+    setLoading(true);
+    getAllTodos({
+      filter: {
+        page: todoPagination.page,
+        limit: todoPagination.limit,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        updateTodos({ todos: data?.data, todoMeta: data?.meta });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
+
+  const handleDeleteTodo = async (todoId: string | undefined) => {
+    setLoading(true);
+    deleteTodo(todoId)
+      .then((response) => response.json())
+      .then(handleGetAllTodos)
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <div className={`flex flex-col flex-nowrap w-full h-full`}>
       <div className="flex flex-row flex-nowrap justify-between items-center w-full h-12 px-4 mb-10 border-b-2 py-2">
         <h1 className="text-2xl font-bold">Todos</h1>
         <div>
-          <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={refreshTodos}>
+          <button className="mx-2 rounded-md border-green-600 border-2 py-1 px-6 hover:bg-green-600 hover:text-white" onClick={handleRefreshTodos}>
             Refresh
+          </button>
+          <button className="rounded-md border-yellow-600 border-2 py-1 px-1 hover:bg-yellow-600 hover:text-white" onClick={handleResetPaginationChange}>
+            Reset
           </button>
           <Link href={"/dashboard/create-todo"} className="mx-2 self-end text-center bg-green-600 rounded-md py-2 px-6 w-36 text-white font-bold tracking-wide hover:bg-green-700">
             New
@@ -75,15 +129,17 @@ export default function Dashboard() {
           todos?.map((todo) => (
             <div key={todo._id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-lg">
               <div className="flex flex-row flex-nowrap justify-between w-full h-12 border-b-[1px]">
-                <div className="flex flex-crow items-center flex-nowrap w-3/4">
-                  <h1 className="text-xl font-bold hover:text-gray-500 cursor-pointer">{todo.title}</h1>
+                <div className="flex flex-row items-center flex-nowrap w-3/4">
+                  <Link href={`/dashboard/todo/${todo._id}`} className="text-xl font-bold hover:text-gray-500 cursor-pointer">
+                    {todo.title}
+                  </Link>
                   <div className="ml-4 flex flex-row gap-2">
                     <Link className="text-sm text-center font-semibold text-gray-900 rounded-md bg-gray-200 px-2" href={"/dashboard/edit-todo/" + todo._id}>
                       edit
                     </Link>
                     <button
                       onClick={() => {
-                        deleteTodo(todo?._id);
+                        handleDeleteTodo(todo?._id);
                       }}
                       className="text-sm text-center font-semibold text-red-900 rounded-md bg-red-100 px-2"
                     >
@@ -92,17 +148,19 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex flex-col flex-nowrap justify-center w-24">
-                  <h1 className={`text-sm font-bold text-center text-white p-1 rounded-3xl ${STATUS_MAP[todo?.status ?? ""]}`}>{todo?.status}</h1>
+                  <h1 className={`text-sm font-bold text-center text-white p-1 rounded-3xl ${todo?.status === "pending"? "bg-red-500" : todo?.status === "completed" ? "bg-green-500" : "bg-yellow-500"   }`}>{todo?.status}</h1>
                 </div>
               </div>
               <div className="flex flex-row flex-nowrap w-full h-16 mt-2">
-                <div className="flex flex-col flex-nowrap justify-center w-full">
-                  <p className="text-sm font-normal text-wrap whitespace-wrap line-clamp-6">{todo.description}</p>
+                <div className="flex flex-col flex-nowrap justify-center w-full h-full">
+                  {/* <p className="text-sm font-normal text-clip whitespace-normal h-16 w-full"></p> */}
+                  <p className="line-clamp-3 text-clip whitespace-normal min-w-[300px] max-w-[900px]">{todo.description}</p>
                 </div>
               </div>
             </div>
           ))}
       </div>
+      {loading == false && <Pagination currentPage={todoPagination.page} totalPages={todoMeta?.totalPages || 0} onPageChange={handlePaginationChange} />}
     </div>
   );
 }

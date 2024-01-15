@@ -1,4 +1,4 @@
-import { createStore, create } from "zustand";
+import { create } from "zustand";
 
 const user: User = {
   name: "",
@@ -7,23 +7,56 @@ const user: User = {
   isLoggedIn: false,
 };
 
-const todos: Todo = [{ _id: "", title: "", description: "", status: "", isCompleted: false, createdAt: "", updatedAt: "" }];
+const todos: Todos = [];
 
 const useStore = create<StoreState>((set, get) => ({
   user: { ...user },
   todos: [...todos],
-  updateUser: ({ user, isLoggedIn }: { user: User; isLoggedIn: Boolean }) => {
+  todoPagination: {
+    page: 1,
+    limit: 10,
+  },
+  todoMeta: {
+    totalRecords: 0,
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+  },
+
+  updateTodoMeta: (todoMeta: TodoMeta) => {
     set((state: StoreState) => {
-      const updatedUser = { ...state.user, ...user };
-      isLoggedIn ? (updatedUser.isLoggedIn = true) : (updatedUser.isLoggedIn = false);
-      console.log(updatedUser);
-      return { ...state, user: user ? updatedUser : state.user };
+      return { ...state, todoMeta };
     });
   },
-  updateTodos: (todos: Todo) => {
-    set((state: StoreState) => {
 
-      return { ...state, todos: todos ? todos : state.todos };
+  updatePagination: ({ page, limit }: { page: number; limit: number }) => {
+    set((state: StoreState) => {
+      return { ...state, todoPagination: { page, limit } };
+    });
+  },
+
+  updateUser: ({ user, isLoggedIn }: { user: User | null; isLoggedIn: Boolean | null }) => {
+    set((state: StoreState) => {
+      let updatedUser = { ...state.user };
+      if (user) {
+        updatedUser = { ...updatedUser, ...user };
+        isLoggedIn ? (updatedUser.isLoggedIn = true) : (updatedUser.isLoggedIn = false);
+      }
+      console.log(updatedUser);
+      return { ...state, user: updatedUser };
+    });
+  },
+  updateTodos: ({ todos, todoMeta }: { todos: Todos; todoMeta?: TodoMeta | undefined }) => {
+    set((state: StoreState) => {
+      const updatedTodos = [...todos].sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateA > dateB ? -1 : 1;
+      });
+      if (todoMeta) {
+        return { ...state, todos: updatedTodos, todoMeta };
+      }
+      return { ...state, todos: todos ? updatedTodos : state.todos };
     });
   },
 }));
