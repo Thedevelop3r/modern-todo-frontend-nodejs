@@ -8,10 +8,12 @@ const user: User = {
 };
 
 const todos: Todos = [];
+const trash: Todos = [];
 
 const useStore = create<StoreState>((set, get) => ({
   user: { ...user },
   todos: [...todos],
+  trash: [...trash],
   todoPagination: {
     page: 1,
     limit: 10,
@@ -22,10 +24,40 @@ const useStore = create<StoreState>((set, get) => ({
     limit: 10,
     totalPages: 0,
   },
+  trashPagination: {
+    page: 1,
+    limit: 10,
+  },
+  trashMeta: {
+    totalRecords: 0,
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+  },
 
   updateTodoMeta: (todoMeta: TodoMeta) => {
     set((state: StoreState) => {
       return { ...state, todoMeta };
+    });
+  },
+
+  updateTrashPagination: ({ page, limit }: { page: number; limit: number }) => {
+    set((state: StoreState) => {
+      return { ...state, trashPagination: { page, limit } };
+    });
+  },
+
+  updateTrash: ({ trash, trashMeta }: { trash: Todos; trashMeta?: TodoMeta | undefined }) => {
+    set((state: StoreState) => {
+      const updatedTrash = [...trash].sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateA > dateB ? -1 : 1;
+      });
+      if (trashMeta) {
+        return { ...state, trash: updatedTrash, trashMeta };
+      }
+      return { ...state, trash: trash ? updatedTrash : state.trash };
     });
   },
 

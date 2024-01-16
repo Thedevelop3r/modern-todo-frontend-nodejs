@@ -130,7 +130,7 @@ export default function Dashboard() {
             <div key={todo._id} className="flex flex-col flex-nowrap justify-start w-full h-min px-4 mb-8 bg-white rounded-md shadow-lg">
               <div className="flex flex-row flex-nowrap justify-between w-full h-12 border-b-[1px]">
                 <div className="flex flex-row items-center flex-nowrap w-3/4">
-                  <Link href={`/dashboard/todo/${todo._id}`} className="text-xl font-bold hover:text-gray-500 cursor-pointer">
+                  <Link href={`/dashboard/todo/${todo._id}`} className="text-xl font-bold hover:text-gray-500 cursor-pointer hover:underline">
                     {todo.title}
                   </Link>
                   <div className="ml-4 flex flex-row gap-2">
@@ -153,7 +153,6 @@ export default function Dashboard() {
               </div>
               <div className="flex flex-row flex-nowrap w-full h-16 mt-2">
                 <div className="flex flex-col flex-nowrap justify-center w-full h-full">
-                  {/* <p className="text-sm font-normal text-clip whitespace-normal h-16 w-full"></p> */}
                   <p className="line-clamp-3 text-clip whitespace-normal min-w-[300px] max-w-[900px]">{todo.description}</p>
                 </div>
               </div>

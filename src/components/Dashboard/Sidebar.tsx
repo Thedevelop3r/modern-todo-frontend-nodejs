@@ -59,12 +59,12 @@ export default function Sidebar({ navLinks }: { navLinks: Array<{ href: string; 
             <span className="mx-4">Profile</span>
           </Link>
           <Link
-            href="/dashboard/settings"
+            href="/dashboard/trash"
             className={`flex items-center px-4 py-2 mt-2 text-sm font-medium text-gray-700 transition-colors duration-200 transform rounded-md dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-500 ${
-              path == "/dashboard/settings" ? "bg-gray-200 dark:bg-gray-500" : ""
+              path == "/dashboard/trash" ? "bg-gray-200 dark:bg-gray-500" : ""
             }`}
           >
-            <span className="mx-4">Settings</span>
+            <span className="mx-4">Trash</span>
           </Link>
         </nav>
         <div className="flex items-center px-4 -mx-2">

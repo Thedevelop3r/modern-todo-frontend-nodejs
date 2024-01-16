@@ -1,7 +1,12 @@
 {
   "name": "modern-todo-frontend-nodejs",
   "version": "0.1.0",
-  "private": true,
+  "private": "false",
+  "author": "Bilal Amjad",
+  "developer": "Bilal Amjad",
+  "developer-github": "www.github.com/thedevelop3r",
+  "username": "@thedevelop3r",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

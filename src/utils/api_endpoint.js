@@ -6,4 +6,5 @@ export const API_ENDPOINT = {
   me: "http://localhost:4000/api/user/me",
   register: "http://localhost:4000/api/user/register",
   todo: "http://localhost:4000/api/todo",
+  trash: "http://localhost:4000/api/trash",
 };

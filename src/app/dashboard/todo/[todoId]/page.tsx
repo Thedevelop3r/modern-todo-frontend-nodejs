@@ -54,6 +54,13 @@ export default function Todo({ params }: { params: { todoId: string } }) {
       <div className="flex flex-col flex-nowrap w-full h-full">
         <div className="flex flex-row flex-nowrap justify-between items-center w-full h-12 px-4 mb-10 border-b-2 py-2">
           <h1 className="text-2xl font-bold flex">
+          <span
+          onClick={() => {
+            router.back();
+          }}
+          className='mr-4 bg-slate-200 px-2 text-center flex flex-row items-center justify-center py-0 cursor-pointer'>
+          <p>{"<"}</p>
+          </span>
             Todo{" "}
             <span onClick={handleCopyId} className="ml-2 my-auto px-2 text-lg rounded-md cursor-pointer bg-green-100 text-green-900">
               {todoId}

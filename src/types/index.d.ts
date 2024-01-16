@@ -35,12 +35,17 @@ interface TodoFilter {
 type StoreState = {
   user: User | null;
   todos: Todos;
+  trash: Todos;
+  trashMeta: TodoMeta;
+  trashPagination: TodoFilter;
   todoMeta: TodoMeta;
   todoPagination: TodoFilter;
   updateUser: ({ user, isLoggedIn }: { user: User | null; isLoggedIn: Boolean | null }) => void;
   updateTodos: ({ todos, todoMeta }: { todos: Todos; todoMeta?: TodoMeta | undefined }) => void;
   updatePagination: ({ page, limit }: { page: number; limit: number }) => void;
   updateTodoMeta: ({ totalRecords, page, limit, totalPages }: TodoMeta) => void;
+  updateTrash: ({trash, trashMeta}:{trash:Todos, trashMeta?:TodoMeta | undefined}) => void;
+  updateTrashPagination: ({ page, limit }: { page: number; limit: number }) => void;
 };
 
 type STATUS_MAP_ = {
