@@ -35,6 +35,33 @@ const getTodo = async (todoId: string) => {
   });
 };
 
+const getTrash = async ({ filter }: { filter: TodoFilter }) => {
+  const options: RequestInit = {
+    method: "GET",
+    credentials: "include",
+  };
+  const url = new URL(API_ENDPOINT.trash);
+  const query = Object.keys(filter)
+    .map((key) => {
+      return key + "=" + filter[key];
+    })
+    .join("&");
+  url.search = query;
+  return fetch(url, options);
+};
+const recoverTrashTodo = async (todoId?: string) => {
+  return fetch(`${API_ENDPOINT.trash}/${todoId}`, {
+    method: "PUT",
+    credentials: "include",
+  });
+};
+const deleteTrashTodo = async (todoId?: string) => {
+  return fetch(`${API_ENDPOINT.trash}/${todoId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+};
+
 const getUser = async () => {
   return fetch(API_ENDPOINT.me, {
     method: "GET",
@@ -80,9 +107,24 @@ const capitalizeFirstLetter = (str: string) => {
 };
 
 const STATUS_MAP: STATUS_MAP_ = {
-  "completed": "bg-green-500",
-  "progress": "bg-yellow-500",
-  "pending": "bg-red-500",
+  completed: "bg-green-500",
+  progress: "bg-yellow-500",
+  pending: "bg-red-500",
 };
 
-export { STATUS_MAP,updateUserProfile ,getAllTodos, refreshTodos, deleteTodo, getUser, capitalizeEachWord, capitalizeFirstLetter, getTodo, updateTodo, getProfile };
+export {
+  STATUS_MAP,
+  getTrash,
+  recoverTrashTodo,
+  deleteTrashTodo,
+  updateUserProfile,
+  getAllTodos,
+  refreshTodos,
+  deleteTodo,
+  getUser,
+  capitalizeEachWord,
+  capitalizeFirstLetter,
+  getTodo,
+  updateTodo,
+  getProfile,
+};

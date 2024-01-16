@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "@/store/state";
 import { capitalizeEachWord, getTodo, updateTodo } from "@/utils";
 
+// TODO 2. add back button router.back()
+
 export default function EditTodo({ params }: { params: { todoId: string } }) {
   const [todo, setTodo] = useState<Todo | null>(null);
   const [loading, setLoading] = useState(false);
