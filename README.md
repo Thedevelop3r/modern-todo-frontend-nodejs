@@ -2,6 +2,12 @@
 
 written by [Bilal Amjad](https://github.com/Thedevelop3r) in Nextjs 14 and Tailwindcss - (typescript)
 
+
+## Dashboard
+
+
+![Dashboard](https://github.com/Thedevelop3r/modern-todo-frontend-nodejs/blob/main/project-screenshots/dashboard.png?raw=true)
+
 ## Description
 
 This Frontend is being developed for Todo Application, for creating and managing users, todos and todo items.
